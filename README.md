@@ -78,6 +78,17 @@ ou en cas de problèmes multiples:
 
 ![$ git lg -8](./src/commit.png)
 
+### Configuration de Git
+* Configuration du push
+```bash
+git config --global push.default current
+```
+Cela permettra de déduire la partie origine my_branch, donc vous pouvez faire:
+```bash
+git push
+```
+Ce qui créera la branche distante avec le même nom et la trackera.
+
 ### Alias
 #### git lg
 Afin de vous simplifier la lecture du git log, vous pouvez mettre en place cet alias :
