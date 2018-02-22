@@ -100,3 +100,79 @@ git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Crese
 Vous pouvez maintenant utiliser la commande **git lg** afin d'afficher votre journal d'historique
 
 ![$ git lg -8](./src/alias-lg.png)
+
+#### git fixup
+Je veux corriger une faute de frappe dans un commit précédent après quelques nouvelles commites. L'objectif est de conserver un historique "propre" avec des commites cohérentes ajoutant des fonctionnalités.
+
+
+L'opération se fait en deux étapes...
+1. Première étape, on va créer un commit qui contiendra nos modifications. Un commit de fixup !C'est un commit qui fait office de "patch" du commit à modifier.
+```sh
+git commit --fixup A
+```
+
+2. Deuxième étape: je dois intégrer mon commit de fixup dans le commit à modifier. Pour ça, il faut réécrire l'historique.
+On va alors utiliser le Rebase.
+A sera donc réécrit en A'.
+```sh
+git rebase -i A~ --autosquash
+```
+NB: A représente le sha1 de commits en question.
+
+
+vous pouvez mettre en place cet alias :
+```sh
+fixup = !sh -c 'SHA=$(git rev-parse $1) \
+       && git commit --fixup $SHA \
+       && git rebase -i --autosquash $SHA~' -
+```
+
+###### Exemple:
+À partir de l'historique git suivant:
+```sh
+$ git log --oneline --decorate
+d36dc2f code code code
+7add401 add README
+fb5b59c initial commit
+```
+Si vous réalisez que vous avez fait une faute de frappe dans le fichier README initial, vous pouvez corriger et modifier la validation 'add README' au lieu de créer un nouveau commit pour une faute de frappe:
+```sh
+$ {Correction}
+$ git add .
+$ git commit --fixup 7add401
+```
+Git a créé un commit avec un message préfixé par '! Fixup':
+```sh
+$ git log --oneline --decorate
+7fd8071 (HEAD -> master) fixup! add README
+d36dc2f code code code
+7add401 add README
+fb5b59c initial commit
+```
+Maintenant, vous pouvez réécrire l'histoire git des 3 précédents commits avec:
+```sh
+git rebase -i --autosquash 7add401~
+```
+Et le résultat
+```sh
+$ git log --oneline --decorate
+3ec6daa (HEAD -> master) code code code
+d6c4c24 add README
+fb5b59c initial commit
+```
+
+
+
+avec l'alias
+```sh
+$ {Correction}
+$ git add .
+$ git fixup 7add401
+```
+le même résultat en une seule étape :
+```sh
+$ git log --oneline --decorate
+3ec6daa (HEAD -> master) code code code
+d6c4c24 add README
+fb5b59c initial commit
+```
