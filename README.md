@@ -180,5 +180,5 @@ fb5b59c initial commit
 ### Bonus
 Question: Comment forcer “git pull” à écraser les fichiers locaux?
 ```sh
-	$ git fetch --all && git reset --hard origin/master
+$ git fetch --all && git reset --hard origin/master
  ```
