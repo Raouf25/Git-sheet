@@ -182,3 +182,8 @@ Question: Comment forcer “git pull” à écraser les fichiers locaux?
 ```sh
 $ git fetch --all && git reset --hard origin/master
  ```
+ 
+ Git alias pour lancer vos tests maven avant de mettre le code sur le serveur :
+```sh
+$ git config alias.spush '!sh -c "mvn clean test && git push $1 $2 $3"'
+ ```
